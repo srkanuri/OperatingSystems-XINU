@@ -8,7 +8,7 @@
  * xsh_date - obtain and print the current month, day, year, and time
  *------------------------------------------------------------------------
  */
-shellcmd xsh_date(int nargs, char *args[]) {
+shellcmd xsh_hello(int nargs, char *args[]) {
 
 	int32	retval;			/* return value			*/
 	uint32	now;			/* current local time		*/

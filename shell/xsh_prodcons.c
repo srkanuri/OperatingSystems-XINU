@@ -1,5 +1,5 @@
 #include <xinu.h>
-#include <ctype.h>
+#include <stdlib.h>
 #include <prodcons.h>
 /***************************************************************
  * xsh_prodcons.c - Custom implementation of prodcons command
@@ -39,10 +39,8 @@ shellcmd xsh_prodcons(int nargs, char *args[])
   /* One argument count */
   //check args[1] if present assign value to count
   if (nargs == 2) {
-    if(isdigit(args[1])){
-      count = (int)args[1];
-    }
-    else{
+    count = atoi(args[1]);
+    if(count == 0 && args[1] != 0){
       fprintf(stderr, "%s: wrong argument enterted\n", args[0]);
       fprintf(stderr, "%s accepts only an integer argument\n", args[0]);
       return 1;

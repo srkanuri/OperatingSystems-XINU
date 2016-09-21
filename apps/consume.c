@@ -18,8 +18,7 @@ void consumer(int count) {
   int cnt=0;
   while (cnt<count){
     if(n!=0){
-      n--;
-      printf("consumed:\t%d\n", cnt+1);
+      printf("consumed:\t%d\n", --n);
       cnt++;
     }
     else{

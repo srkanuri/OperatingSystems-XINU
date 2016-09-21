@@ -19,8 +19,7 @@ extern int n;
 void producer(int count) {
   int cnt=0;
   for (cnt=0; cnt<count; cnt++){
-    n++;
-    printf("produced:\t%d\n", cnt+1);    
+    printf("produced:\t%d\n", ++n);    
   }
 }
 

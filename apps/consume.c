@@ -11,8 +11,10 @@
  * Assignment: 2
  ***************************************************************/
 
+extern int n;
+
 //Code to consume values of global variable 'n' until the value
-//of n is less than or equal to count
+//of n is zero.
 //print consumed value e.g. consumed : 8
 void consumer(int count) {
   while (1){

@@ -18,10 +18,15 @@ extern int n;
 //print produced value e.g. produced : 8
 void producer(int count) {
   int cnt=0;
-  for (cnt=0; cnt<count; cnt++){
-    printf("produced:\t%d\n", ++n);    
+  
+  while (1) {
+    if(n < count) {
+      printf("produced:\t%d\n", ++n);
+    }
+    else {
+      sleep(10);
+      continue;
+    }
   }
-}
-
-
+}    
 

@@ -16,7 +16,7 @@
 //print consumed value e.g. consumed : 8
 void consumer(int count) {
   while (1){
-    if(n > 0) {
+    if(n > 1) {
       printf("consumed:\t%d\n", --n);
     }
     else{

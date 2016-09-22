@@ -4,7 +4,7 @@
  * produce.c - Program which produces the resource n until count
  *
  * Authors: Srikanth Kanuri (srkanuri)
- *          Mangarish Wagle (mawagle)
+ *          Mangirish Wagle (mawagle)
  * Date Created: 09/20/2016
  * Last Modified by: Srikanth Kanuri
  * Date Last Modified: 09/20/2016

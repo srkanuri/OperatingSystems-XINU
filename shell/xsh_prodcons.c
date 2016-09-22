@@ -5,7 +5,7 @@
  * xsh_prodcons.c - Custom implementation of prodcons command
  *
  * Authors: Srikanth Kanuri (srkanuri)
- *          Mangarish Wagle (mawagle)
+ *          Mangirish Wagle (mawagle)
  * Date Created: 09/20/2016
  * Last Modified by: Srikanth Kanuri
  * Date Last Modified: 09/20/2016

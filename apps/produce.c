@@ -17,14 +17,12 @@ extern int n;
 //produced value should get assigned to global variable 'n'.
 //print produced value e.g. produced : 8
 void producer(int count) {
-  int cnt=0;
-  
   while (1) {
     if(n < count) {
       printf("produced:\t%d\n", ++n);
     }
     else {
-      sleep(10);
+      sleep(1);
       continue;
     }
   }

@@ -1,0 +1,29 @@
+***************************************************************
+* Team: Srikanth Kanuri (srkanuri)
+*       Mangarish Wagle (mawagle)
+* Date Created: 09/23/2016
+* Assignment: 2
+***************************************************************
+  **************    ASSIGNMENT2 REPORT    *****************
+***************************************************************
+
+Work Distibution:
+We worked on the following tasks (owners of the tasks are mentioned in line):-
+
+Repository URL: https://github.iu.edu/mawagle/OS-FA16/tree/A2
+    Create the prodcons.h header file. --> Srikanth
+    Create xsh_prodcons.c file 	       --> Srikanth
+    Create produce.c file. 	       --> Mangirish
+    Create consume.c file. 	       --> Mangirish
+
+Also added xsh_prodcons into shell.c and shprototypes.h
+
+1. Does your program output any garbage? If yes, why?
+A: There are no garbage values in the output observed.
+
+2. Are all the produced values getting consumed? Check your program for a small count like 20.
+A: All produced values are getting consumed. It has been tested for random inputs ranging from ( 10 to 2000 ).
+
+Learnings:
+We understood and implemented how the Producer Consumer problem and also understood how the lightweight processes are created in xinu with create()
+The created process is always set to suspended state and it will have to be put into the ready queue with resume()

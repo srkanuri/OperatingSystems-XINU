@@ -10,6 +10,10 @@
  ***************************************************************/
 extern int n; //Global variable for producer consumer
 
+/* Semaphore Declarations */
+extern sid32 produced, consumed;
+
 /*Function Prototypes*/
 void consumer(int count);
 void producer(int count);
+

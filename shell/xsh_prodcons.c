@@ -13,12 +13,16 @@
  ***************************************************************/
 /*Global variable n will be on heap and accessible in consume and produce*/
 int n;  //Definition for global variable 'n'
+sid32 produced, consumed;
 
 shellcmd xsh_prodcons(int nargs, char *args[])
 {
   //Argument verifications and validations
   int count = 2000;             //local varible to hold count
   
+  // Initializing semaphores
+  produced = semcreate(0);
+  consumed = semcreate(1);  
   
   /* Output info for '--help' argument */
   if (nargs == 2 && strncmp(args[1], "--help", 7) == 0) {

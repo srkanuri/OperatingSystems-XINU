@@ -12,6 +12,7 @@
  ***************************************************************/
 
 extern int n;
+extern sid32 produced, consumed;
 
 //Code to consume values of global variable 'n' until the value
 //of n is zero.
@@ -19,7 +20,9 @@ extern int n;
 void consumer(int count) {
   while (1){
     if(n > 0) {
+      wait(produced);
       printf("consumed:\t%d\n", --n);
+      signal(consumed);
     }
     else{
       sleep(1);

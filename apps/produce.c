@@ -6,9 +6,9 @@
  * Authors: Srikanth Kanuri (srkanuri)
  *          Mangirish Wagle (mawagle)
  * Date Created: 09/20/2016
- * Last Modified by: Srikanth Kanuri
- * Date Last Modified: 09/20/2016
- * Assignment: 2
+ * Last Modified by: Mangarish Wagle
+ * Date Last Modified: 09/27/2016
+ * Assignment: 2 and 3
  ***************************************************************/
 
 extern int n;
@@ -25,13 +25,8 @@ void producer(int count) {
     // At any given time, produced items should not exceed count. 
     if(n < count) {
       wait(consumed);
-      printf("produced:\t%d\n", ++n);
+      printf("Produced> Total produced: %d\tResources Available: %d\n",++x,++n);
       signal(produced);
-      x++;
-    }
-    else {
-      sleep(1);
-      continue;
     }
   }
 }    

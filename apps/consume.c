@@ -6,9 +6,9 @@
  * Authors: Srikanth Kanuri (srkanuri)
  *          Mangirish Wagle (mawagle)
  * Date Created: 09/20/2016
- * Last Modified by: Srikanth Kanuri
- * Date Last Modified: 09/20/2016
- * Assignment: 2
+ * Last Modified by: Mangarish Wagle
+ * Date Last Modified: 09/27/2016
+ * Assignment: 2 and 3
  ***************************************************************/
 
 extern int n;
@@ -18,16 +18,13 @@ extern sid32 produced, consumed;
 //of n is zero.
 //print consumed value e.g. consumed : 8
 void consumer(int count) {
+  int32 p = 0;
   while (1){
     if(n > 0) {
       wait(produced);
-      printf("consumed:\t%d\n", --n);
+      printf("Consumed> Total consumed: %d\tResources available: %d\n", ++p, --n);
       signal(consumed);
     }
-    else{
-      sleep(1);
-      continue;
-    } 
   }
 }
 

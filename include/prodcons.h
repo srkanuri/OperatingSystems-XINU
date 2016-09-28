@@ -4,9 +4,9 @@
  * Authors: Srikanth Kanuri (srkanuri)
  *          Mangarish Wagle (mawagle)
  * Date Created: 09/20/2016
- * Last Modified by: Srikanth Kanuri
- * Date Last Modified: 09/20/2016
- * Assignment: 2
+ * Last Modified by: Mangarish Wagle
+ * Date Last Modified: 09/27/2016
+ * Assignment: 2 and 3
  ***************************************************************/
 extern int n; //Global variable for producer consumer
 

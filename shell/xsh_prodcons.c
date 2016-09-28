@@ -7,13 +7,13 @@
  * Authors: Srikanth Kanuri (srkanuri)
  *          Mangirish Wagle (mawagle)
  * Date Created: 09/20/2016
- * Last Modified by: Srikanth Kanuri
- * Date Last Modified: 09/20/2016
- * Assignment: 2
+ * Last Modified by: Mangarish Wagle
+ * Date Last Modified: 09/27/2016
+ * Assignment: 2 and 3
  ***************************************************************/
 /*Global variable n will be on heap and accessible in consume and produce*/
 int n;  //Definition for global variable 'n'
-sid32 produced, consumed;
+sid32 produced, consumed; //global definitions for produced and consumed
 
 shellcmd xsh_prodcons(int nargs, char *args[])
 {
@@ -22,7 +22,7 @@ shellcmd xsh_prodcons(int nargs, char *args[])
   
   // Initializing semaphores
   produced = semcreate(0);
-  consumed = semcreate(1);  
+  consumed = semcreate(1);
   
   /* Output info for '--help' argument */
   if (nargs == 2 && strncmp(args[1], "--help", 7) == 0) {

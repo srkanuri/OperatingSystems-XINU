@@ -25,6 +25,10 @@ void consumer(int count) {
       printf("Consumed> Total consumed: %d\tResources available: %d\n", ++p, --n);
       signal(consumed);
     }
+    else{
+      sleep(1);
+      continue;
+    } 
   }
 }
 

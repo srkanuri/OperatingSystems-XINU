@@ -28,6 +28,10 @@ void producer(int count) {
       printf("Produced> Total produced: %d\tResources Available: %d\n",++x,++n);
       signal(produced);
     }
+    else {
+      sleep(1);
+      continue;
+    }
   }
 }    
 

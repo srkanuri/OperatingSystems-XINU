@@ -1,29 +1,26 @@
 ***************************************************************
 * Team: Srikanth Kanuri (srkanuri)
 *       Mangarish Wagle (mawagle)
-* Date Created: 09/23/2016
-* Assignment: 2
+* Date Created: 09/27/2016
+* Assignment: 3
 ***************************************************************
   **************    ASSIGNMENT2 REPORT    *****************
 ***************************************************************
 
-Work Distibution:
-We worked on the following tasks (owners of the tasks are mentioned in line):-
+1. How exactly is sychronization achieved using semaphore in our assignnment?
+A: We have a shared resource n which we divide among the producer and consumer process.
+   Without a semaphone, both the producer and consumer will randomly add and remove values from the resource. 
+   There is no synchronization between both the processes.
+   
+   But with semaphores, we create a semaphore for producer and consumer which will help in syncronizing producer and consumer.
+   Once the semaphores is created and initialized(produced to 0 and consumed to 1), we start running the producer and consumer processes
 
-Repository URL: https://github.iu.edu/mawagle/OS-FA16/tree/A2
-    Create the prodcons.h header file. --> Srikanth
-    Create xsh_prodcons.c file 	       --> Srikanth
-    Create produce.c file. 	       --> Mangirish
-    Create consume.c file. 	       --> Mangirish
+   The consumer waits till producer adds value as it waits on the "produced" semaphore.
+   The producer does not wait since it checks on the "consumed" semaphone which is set to 1.
+   The producer adds a value to the resource and then signals the consumer.
+   The consumer then consumes the values and signals the producer back. This process happens in synchronizaition with semaphores.
 
-Also added xsh_prodcons into shell.c and shprototypes.h
-
-1. Does your program output any garbage? If yes, why?
-A: There are no garbage values in the output observed.
-
-2. Are all the produced values getting consumed? Check your program for a small count like 20.
-A: All produced values are getting consumed. It has been tested for random inputs ranging from ( 10 to 2000 ).
-
-Learnings:
-We understood and implemented how the Producer Consumer problem and also understood how the lightweight processes are created in xinu with create()
-The created process is always set to suspended state and it will have to be put into the ready queue with resume()
+2. Can the above sychronization be achieved with just one semphore? Why or why not?
+A: We cannot achieve this without 2 semaphores since the wait and signal framework cannot work with one semaphore.
+   The moment we signal on a semaphore, it again becomes a random pick on which process runs since both will wait on the same semaphore.
+   Hence we will need 2 semaphores.

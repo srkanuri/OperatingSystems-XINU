@@ -1,6 +1,6 @@
 ***************************************************************
 * Team: Srikanth Kanuri (srkanuri)
-*       Mangarish Wagle (mawagle)
+*       Mangirish Wagle (mawagle)
 * Date Created: 09/27/2016
 * Assignment: 3
 ***************************************************************
@@ -24,3 +24,10 @@ A: We have a shared resource n which we divide among the producer and consumer p
 A: We cannot achieve this without 2 semaphores since the wait and signal framework cannot work with one semaphore.
    The moment we signal on a semaphore, it again becomes a random pick on which process runs since both will wait on the same semaphore.
    Hence we will need 2 semaphores.
+   
+Task Distribution:-
+1) Code change in produce.c -> Mangirish
+2) Code change in consume.c -> Mangirish
+3) Code change in prodcons.h -> Srikanth
+4) Code change in xsh_prodcons.c -> Srikanth
+5) Report writing -> Srikanth, Mangirish

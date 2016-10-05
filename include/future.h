@@ -22,5 +22,9 @@ future* future_alloc(int future_flags);
 syscall future_free(future*);
 syscall future_get(future*, int*);
 syscall future_set(future*, int*);
+
+/* Interface for app function call */
+uint future_prod(future *fut);
+uint future_cons(future *fut);
  
 #endif /* _FUTURE_H_ */

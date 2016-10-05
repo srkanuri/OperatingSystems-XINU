@@ -10,11 +10,15 @@
 syscall future_set(future* f, int *value)
 {
 
-  if(f == NULL || value == NULL) {
+  if(f == NULL || value == NULL || f->state == FUTURE_VALID) {
     return SYSERR;
   }
 
   f->value = *value;
+  
+  if(f->state == FUTURE_WAITING) {
+    resume(f->pid);
+  }
   f->state = FUTURE_VALID;
 
   return OK;

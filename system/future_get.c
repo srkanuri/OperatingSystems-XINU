@@ -10,13 +10,18 @@
 syscall future_get(future* f, int *value)
 {
   
-  if(f == NULL || value == NULL) {
+  if(f == NULL || value == NULL || f->state == FUTURE_WAITING) {
     return SYSERR;
   }
   
-  *value = f->value;
-  f->state = FUTURE_EMPTY;
-
+  if( f->state == FUTURE_EMPTY ) {
+    f->pid = getpid();
+    f->state = FUTURE_WAITING;
+    suspend(f->pid);    
+  } else {
+    *value = f->value;
+    f->state = FUTURE_EMPTY;
+  }
   return OK;
 }
 

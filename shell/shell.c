@@ -23,9 +23,10 @@ const	struct	cmdent	cmdtab[] = {
 	{"sleep",	FALSE,	xsh_sleep},
 	{"uptime",	FALSE,	xsh_uptime},
         {"prodcons", FALSE, xsh_prodcons}, //Code for adding prodcons shell command
+
 #ifdef ARM_BBB
-  {"arp",		FALSE,	xsh_arp},
-  {"ipaddr",	FALSE,	xsh_ipaddr},
+	{"arp",		FALSE,	xsh_arp},
+	{"ipaddr",	FALSE,	xsh_ipaddr},
 	{"ping",	FALSE,	xsh_ping},
 	{"udp",		FALSE,	xsh_udpdump},
 	{"udpecho",	FALSE,	xsh_udpecho},

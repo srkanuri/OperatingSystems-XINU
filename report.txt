@@ -1,0 +1,33 @@
+***************************************************************
+* Team: Srikanth Kanuri (srkanuri)
+*       Mangirish Wagle (mawagle)
+* Date Created: 09/27/2016
+* Assignment: 3
+***************************************************************
+  **************    ASSIGNMENT3 REPORT    *****************
+***************************************************************
+
+1. How exactly is sychronization achieved using semaphore in our assignnment?
+A: We have a shared resource n which we divide among the producer and consumer process.
+   Without a semaphone, both the producer and consumer will randomly add and remove values from the resource. 
+   There is no synchronization between both the processes.
+   
+   But with semaphores, we create a semaphore for producer and consumer which will help in syncronizing producer and consumer.
+   Once the semaphores is created and initialized(produced to 0 and consumed to 1), we start running the producer and consumer processes
+
+   The consumer waits till producer adds value as it waits on the "produced" semaphore.
+   The producer does not wait since it checks on the "consumed" semaphone which is set to 1.
+   The producer adds a value to the resource and then signals the consumer.
+   The consumer then consumes the values and signals the producer back. This process happens in synchronizaition with semaphores.
+
+2. Can the above sychronization be achieved with just one semphore? Why or why not?
+A: We cannot achieve this without 2 semaphores since the wait and signal framework cannot work with one semaphore.
+   The moment we signal on a semaphore, it again becomes a random pick on which process runs since both will wait on the same semaphore.
+   Hence we will need 2 semaphores.
+   
+Task Distribution:-
+1) Code change in produce.c -> Mangirish
+2) Code change in consume.c -> Mangirish
+3) Code change in prodcons.h -> Srikanth
+4) Code change in xsh_prodcons.c -> Srikanth
+5) Report writing -> Srikanth, Mangirish

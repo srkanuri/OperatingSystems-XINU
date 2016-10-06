@@ -8,11 +8,12 @@
  *
  * Authors: Srikanth Kanuri (srkanuri)
  *          Mangirish Wagle (mawagle)
- * Date Created: 09/20/2016
- * Last Modified by: Mangarish Wagle
- * Date Last Modified: 09/27/2016
- * Assignment: 2 and 3
+ * Date Created: 10/06/2016
+ * Last Modified by: Srikanth Kanuri
+ * Date Last Modified: 10/06/2016
+ * Assignment: 4,3,2
  ***************************************************************/
+
 /*Global variable n will be on heap and accessible in consume and produce*/
 int n;  //Definition for global variable 'n'
 sid32 produced, consumed; //global definitions for produced and consumed
@@ -30,11 +31,11 @@ shellcmd xsh_prodcons(int nargs, char *args[])
   
   /* Output info for '--help' argument */
   if (nargs == 2 && strncmp(args[1], "--help", 7) == 0) {
-    printf("Usage: %s [<count>] [-f]\n\n", args[0]);
+    printf("Usage: %s [<count> | -f]\n\n", args[0]);
     printf("Description:\n");
     printf("\tProdcons command is used to demo the producer and consumer problem\n");
-    printf("\tThe command accepts only 1 optional argument 'count'");
-    printf("\tSpecify -f option to use futures instead of semaphores.");
+    printf("\tThe command accepts only 1 optional argument 'count'\n");
+    printf("\tSpecify -f option to use futures instead of semaphores.\n");
     return 0;
   }
   
@@ -62,7 +63,7 @@ shellcmd xsh_prodcons(int nargs, char *args[])
     }
     if(count == 0 && args[1] != 0){
       fprintf(stderr, "%s: wrong argument enterted\n", args[0]);
-      fprintf(stderr, "%s accepts only an integer argument\n", args[0]);
+      fprintf(stderr, "%s accepts only an integer argument or -f for futures\n", args[0]);
       return 1;
     }
   }
@@ -87,5 +88,5 @@ shellcmd xsh_prodcons(int nargs, char *args[])
      resume( create(producer, 1024, 20, "producer", 1, count));
      resume( create(consumer, 1024, 20, "consumer", 1, count));
   }
-  sleep(5);
+  sleep(2);
 }

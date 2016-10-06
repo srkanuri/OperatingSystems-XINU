@@ -1,5 +1,15 @@
 #ifndef _FUTURE_H_
 #define _FUTURE_H_
+/***************************************************************
+ * future.h - Header file for Futures
+ *
+ * Authors: Srikanth Kanuri (srkanuri)
+ *          Mangirish Wagle (mawagle)
+ * Date Created: 10/06/2016
+ * Last Modified by: Srikanth Kanuri
+ * Date Last Modified: 10/06/2016
+ * Assignment: 4
+ ***************************************************************/
  
 /* define states */
 #define FUTURE_EMPTY	  0
@@ -11,10 +21,10 @@
 
 typedef struct futent
 {
-   int *value;		
-   int flag;		
-   int state;         	
-   pid32 pid;
+  int *value;		//Produced Value
+  int flag;		//FUTURE_EXCLUSIVE only
+  int state;         	//FUTURE_EMPTY, FUTURE_WAITING, FUTURE_VALID
+  pid32 pid;            //Process ID of the waiting process
 } future;
 
 /* Interface for system call */

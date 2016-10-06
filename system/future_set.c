@@ -2,22 +2,25 @@
 
 #include <xinu.h>
 #include <future.h>
+/***************************************************************
+ * future_set.c - Sets the value of future and sets the status to FUTURE_VALID
+ *
+ * Authors: Srikanth Kanuri (srkanuri)
+ *          Mangirish Wagle (mawagle)
+ * Date Created: 10/06/2016
+ * Last Modified by: Srikanth Kanuri
+ * Date Last Modified: 10/06/2016
+ * Assignment: 4
+ ***************************************************************/
 
-/*-----------------------------------------------------------------------------
- *  future_set- Sets the value of future and sets the status to FUTURE_VALID
- *-----------------------------------------------------------------------------
- */
 syscall future_set(future* f, int* value)
 {
-  //printf("\n[Process: %d] Inside future_set", getpid());
-
   if(f == NULL || value == NULL || f->state == FUTURE_VALID) {
     return SYSERR;
   }
 
   f->value = (int *)getmem(sizeof(int));
   f->value = *value;
-  //printf("\n[Process: %d] Future Value set: %d", getpid(), f->value);
   
   if(f->state == FUTURE_WAITING) {
     printf("[Process: %d] Resuming process %d\n", getpid(), f->pid);

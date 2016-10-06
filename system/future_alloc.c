@@ -2,11 +2,17 @@
 
 #include <xinu.h>
 #include <future.h>
+/***************************************************************
+ * future_alloc.c - Initializes the future data structure.
+ *
+ * Authors: Srikanth Kanuri (srkanuri)
+ *          Mangirish Wagle (mawagle)
+ * Date Created: 10/06/2016
+ * Last Modified by: Srikanth Kanuri
+ * Date Last Modified: 10/06/2016
+ * Assignment: 4
+ ***************************************************************/
 
-/*------------------------------------------------------------------------
- *  future_alloc- Initializes the future data structure.
- *------------------------------------------------------------------------
- */
 future* future_alloc(int future_flag)
 {
   future *fut = NULL;

@@ -2,11 +2,17 @@
 
 #include <xinu.h>
 #include <future.h>
+/***************************************************************
+ * future_get.c - Gets the value of future and sets the status to FUTURE_EMPTY
+ *
+ * Authors: Srikanth Kanuri (srkanuri)
+ *          Mangirish Wagle (mawagle)
+ * Date Created: 10/06/2016
+ * Last Modified by: Srikanth Kanuri
+ * Date Last Modified: 10/06/2016
+ * Assignment: 4
+ ***************************************************************/
 
-/*---------------------------------------------------------------------------
- *  future_get- Gets the value of future and sets the status to FUTURE_EMPTY
- *---------------------------------------------------------------------------
- */
 syscall future_get(future* f, int* value)
 {
   
@@ -21,7 +27,6 @@ syscall future_get(future* f, int* value)
     suspend(f->pid);    
   }
   value = *f->value;
-  //printf("\n[Process: %d] Future value read: %d", getpid(), value);
   f->state = FUTURE_EMPTY;
   return OK;
 }

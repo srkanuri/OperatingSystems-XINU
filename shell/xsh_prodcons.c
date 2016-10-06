@@ -39,24 +39,27 @@ shellcmd xsh_prodcons(int nargs, char *args[])
   }
   
   /* Wrong argument count */
-  if (nargs > 3) {
+  if (nargs > 2) {
     fprintf(stderr, "%s: too many arguments\n", args[0]);
     fprintf(stderr, "Try '%s --help' for more information\n", args[0]);
     return 1;
   }
 
-  /* argument count */
-  //check args[1] and arg[2] if present assign value to count and usefuture.
+  /* argument count 
+  //check args[1] == -f and arg[2] if present assign value to count and usefuture.
   if (nargs == 3) {
-    if(strcmp(args[2], "-f") == 0) {
-      usefuture = 1;
-    } else {
       fprintf(stderr, "%s: wrong argument enterted\n", args[0]);
       fprintf(stderr, "%s accepts flag -f\n", args[0]);
       return 1;
     }
-  } else  if (nargs == 2) {
-    count = atoi(args[1]);
+  } 
+  else*/  
+  if (nargs == 2) {
+    if(strcmp(args[1], "-f") == 0) {
+      usefuture = 1;
+    } else {
+      count = atoi(args[1]);
+    }
     if(count == 0 && args[1] != 0){
       fprintf(stderr, "%s: wrong argument enterted\n", args[0]);
       fprintf(stderr, "%s accepts only an integer argument\n", args[0]);
@@ -84,4 +87,5 @@ shellcmd xsh_prodcons(int nargs, char *args[])
      resume( create(producer, 1024, 20, "producer", 1, count));
      resume( create(consumer, 1024, 20, "consumer", 1, count));
   }
+  sleep(5);
 }

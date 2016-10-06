@@ -17,7 +17,7 @@ syscall future_get(future* f, int* value)
   if( f->state == FUTURE_EMPTY ) {
     f->pid = getpid();
     f->state = FUTURE_WAITING;
-    printf("\n[Process: %d] Suspending process %d", getpid(), f->pid);
+    printf("[Process: %d] Set to Suspend\n",  f->pid);
     suspend(f->pid);    
   }
   value = *f->value;

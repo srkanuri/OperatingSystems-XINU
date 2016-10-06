@@ -9,6 +9,6 @@ uint future_cons(future *fut) {
     printf("future_get failed\n");
     return -1;
   }
-  printf("\n[Process: %d] Consumed: %d", getpid(),  i);
+  printf("[Process: %d] Consumed: %d\n", getpid(),  fut->value);
   return OK;
 }

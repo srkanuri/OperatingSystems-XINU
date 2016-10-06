@@ -20,7 +20,7 @@ syscall future_set(future* f, int* value)
   //printf("\n[Process: %d] Future Value set: %d", getpid(), f->value);
   
   if(f->state == FUTURE_WAITING) {
-    printf("\n[Process: %d] Resuming process %d", getpid(), f->pid);
+    printf("[Process: %d] Resuming process %d\n", getpid(), f->pid);
     resume(f->pid);
   }
   f->state = FUTURE_VALID;

@@ -1,7 +1,10 @@
+#include <xinu.h>
+
 /***************************************************************
  * future_queue.h - Header file for Future get and set queues.
  ***************************************************************/
 
+// Max number of processes is 100.
 #define MAX_QUEUE_LEN = 100
 
 // Wait queue represented as single linked list. Each node holds pid.
@@ -12,5 +15,5 @@ typedef struct queue_node
 } queue;
 
 /* Interfaces for set and get queue system calls */
-queue* enqueue_process(queue*, pid32);
-queue* dequeue_process(queue*);
+uint enqueue_process(queue*, pid32);
+pid32 dequeue_process(queue*);

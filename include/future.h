@@ -1,5 +1,8 @@
 #ifndef _FUTURE_H_
 #define _FUTURE_H_
+
+#include <future_queue.h>
+
 /***************************************************************
  * future.h - Header file for Futures
  *
@@ -10,7 +13,7 @@
  * Date Last Modified: 10/06/2016
  * Assignment: 4
  ***************************************************************/
- 
+
 /* define states */
 #define FUTURE_EMPTY	  0
 #define FUTURE_WAITING 	  1         
@@ -18,6 +21,8 @@
 
 /* modes of operation for future*/
 #define FUTURE_EXCLUSIVE  1	
+#define FUTURE_SHARED     2	    
+#define FUTURE_QUEUE      3     
 
 typedef struct futent
 {
@@ -25,9 +30,11 @@ typedef struct futent
   int flag;		//FUTURE_EXCLUSIVE only
   int state;         	//FUTURE_EMPTY, FUTURE_WAITING, FUTURE_VALID
   pid32 pid;            //Process ID of the waiting process
+  queue set_queue;
+  queue get_queue;
 } future;
 
-/* Interface for system call */
+/* Interfaces for futures system calls */
 future* future_alloc(int future_flags);
 syscall future_free(future*);
 syscall future_get(future*, int*);

@@ -20,6 +20,12 @@ syscall future_set(future* f, int* value)
   }
 
   f->value = (int *)getmem(sizeof(int));
+
+  // Null check.
+  if(f->value == NULL) {
+  	return SYSERR;
+  }
+
   f->value = *value;
   
   if(f->state == FUTURE_WAITING) {

@@ -19,6 +19,12 @@ future* future_alloc(int future_flag)
   
   if( future_flag != NULL) {
     fut = (future*)getmem(sizeof(future));
+
+    // Null check.
+    if(fut == NULL) {
+    	return (future*)SYSERR;
+    }
+
     fut->flag = future_flag;
     fut->state = FUTURE_EMPTY;
   }

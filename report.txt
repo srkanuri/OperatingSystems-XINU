@@ -1,0 +1,39 @@
+***************************************************************
+* Team: Srikanth Kanuri (srkanuri)
+*       Mangirish Wagle (mawagle)
+* Date Created: 10/06/2016
+* Assignment: 4
+***************************************************************
+  **************    ASSIGNMENT4 REPORT     *****************
+***************************************************************
+The code utilized futures to achieve syncronization.
+The semaphores coexist with futures in our program.
+If a number is input, the output is prodcons with semaphores
+If -f in input, the output is prodcons with futures.
+
+We are using FUTURE_EXCLUSIVE here which means that there is 1 future for
+a producer and consumer.
+
+We are allocating a future for a producer/consumer pair initially.
+The Consumer calls future_get to access a resource. Since the future is
+FUTURE_EMPTY, it is set to FUTURE_WAITING and the consumer process is suspended.
+The pid of consumer is taken note of by future in the pid field
+
+The Producer creates a resource and sets it to future's value with future_set.
+The value is set into the future and the status of future changes from 
+FUTURE_EMPTY/FUTURE_WAITING to FUTURE_VALID.
+
+It also resumes the consumer process. Once the consumer is resumed, the value is taken from future and is consumed.
+
+The process is snyronized with futures.
+
+Task Distribution:-
+1) Code change in future_alloc.c -> Mangirish
+2) Code change in future_get.c -> Mangirish
+3) Code change in future_set.c -> Mangirish
+4) Code change in future_free.c -> Mangirish
+5) Code change in future_prod.c -> Srikanth
+6) Code change in future_cons.c -> Srikanth
+7) Code change in future.h -> Srikanth
+8) Code change in xsh_prodcons.c -> Srikanth
+9) Report writing -> Srikanth, Mangirish

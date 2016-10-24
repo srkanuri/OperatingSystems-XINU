@@ -10,7 +10,7 @@
  * Date Created: 10/06/2016
  * Last Modified by: Srikanth Kanuri
  * Date Last Modified: 10/06/2016
- * Assignment: 4
+ * Assignment: 5,4
  ***************************************************************/
 
 syscall future_get(future* f, int* value)
@@ -24,29 +24,26 @@ syscall future_get(future* f, int* value)
     if( f->state == FUTURE_EMPTY ) {
       f->pid = curr_pid;
       f->state = FUTURE_WAITING;
-      printf("[Process: %d] Set to Suspend\n",  f->pid);
+      //printf("[Process: %d] Set to Suspend\n",  f->pid);
       suspend(f->pid);
     }
     value = *f->value;
     f->state = FUTURE_EMPTY;
   }
-  else if(f->flag == FUTURE_SHARED){
+  else{
+    if(f->set_queue == NULL){
       //printf("%d\n",f->get_queue);
       enqueue_process(&f->get_queue, curr_pid);
       //printf("%d\n",f->get_queue);
-      printf("[Process: %d] Sent to Suspend\n",  curr_pid);
+      //printf("[Process: %d] Sent to Suspend\n",  curr_pid);
       suspend(curr_pid);
-  }
-  else if(f->flag == FUTURE_QUEUE){
-  	  if(f->set_queue == NULL){
-        enqueue_process(&f->get_queue, curr_pid);
-        printf("[Process: %d] Sent to Suspend\n",  curr_pid);
-        suspend(curr_pid);
-  	  }
-  	  else {
-  	    pid32 cons_pid = dequeue_process(&f->set_queue);
-	    resume(cons_pid);
-  	  }
+    }
+    else{
+      pid32 prod_pid = dequeue_process(&f->set_queue);
+      resume(prod_pid);
+      value = *f->value;
+      f->state = FUTURE_EMPTY;
+    }
   }
   return OK;
 }

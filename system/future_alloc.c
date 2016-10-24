@@ -10,7 +10,7 @@
  * Date Created: 10/06/2016
  * Last Modified by: Srikanth Kanuri
  * Date Last Modified: 10/06/2016
- * Assignment: 4
+ * Assignment: 5,4
  ***************************************************************/
 
 future* future_alloc(int future_flag)

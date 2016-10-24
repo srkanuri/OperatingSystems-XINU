@@ -15,6 +15,11 @@
 
 syscall future_free(future* f)
 {
-  return freemem(f, sizeof(f));
+  if(freemem((char*)f->get_queue, sizeof(fqueue)) == OK) {
+  	if(freemem((char*)f->set_queue, sizeof(fqueue)) == OK) {
+  		return freemem(f, sizeof(f));
+  	}
+  }
+  return SYSERR;
 }
 

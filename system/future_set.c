@@ -36,10 +36,11 @@ syscall future_set(future* f, int* value)
   }
   if(f->flag == FUTURE_SHARED){
       //printf("Main PID %d",f->get_queue);
-      while(f->get_queue != NULL){
-	pid32 cons_pid = dequeue_process(&f->get_queue);
-	resume(cons_pid);
-      }
+    while(f->get_queue != NULL){
+		pid32 cons_pid = dequeue_process(&f->get_queue);
+		resume(cons_pid);
+    }
+    future_free(f);
   }
   return OK;
 }

@@ -12,8 +12,8 @@ typedef struct queue_node
 {
   pid32 pid;
   struct queue_node *next;
-} queue;
+} fqueue;
 
 /* Interfaces for set and get queue system calls */
-uint enqueue_process(queue*, pid32);
-pid32 dequeue_process(queue*);
+uint enqueue_process(fqueue** , pid32);
+pid32 dequeue_process(fqueue**);

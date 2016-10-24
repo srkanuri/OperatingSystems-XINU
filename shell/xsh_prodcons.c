@@ -75,10 +75,9 @@ shellcmd xsh_prodcons(int nargs, char *args[])
      f2 = future_alloc(FUTURE_SHARED);
      f3 = future_alloc(FUTURE_QUEUE);
  
-     /*//FUTURE_EXCLUSIVE
+     //FUTURE_EXCLUSIVE
      resume( create(future_cons, 1024, 20, "fcons1", 1, f1) );
      resume( create(future_prod, 1024, 20, "fprod1", 1, f1) );
-     */
 
      //FUTURE_SHARED
      resume( create(future_cons, 1024, 20, "fcons2", 1, f2) );
@@ -86,6 +85,16 @@ shellcmd xsh_prodcons(int nargs, char *args[])
      resume( create(future_cons, 1024, 20, "fcons4", 1, f2) ); 
      resume( create(future_cons, 1024, 20, "fcons5", 1, f2) );
      resume( create(future_prod, 1024, 20, "fprod2", 1, f2) );
+
+     // Test FUTURE_QUEUE
+     resume( create(future_cons, 1024, 20, "fcons6", 1, f3) );
+     resume( create(future_cons, 1024, 20, "fcons7", 1, f3) );
+     resume( create(future_cons, 1024, 20, "fcons7", 1, f3) );
+     resume( create(future_cons, 1024, 20, "fcons7", 1, f3) );
+     resume( create(future_prod, 1024, 20, "fprod3", 1, f3) );
+     resume( create(future_prod, 1024, 20, "fprod4", 1, f3) );
+     resume( create(future_prod, 1024, 20, "fprod5", 1, f3) );
+     resume( create(future_prod, 1024, 20, "fprod6", 1, f3) );
   } else {
      /* Zero argument count */
      //create the process producer and consumer and put them in ready queue.

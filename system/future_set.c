@@ -15,8 +15,24 @@
 
 syscall future_set(future* f, int* value)
 {
-  if(f == NULL || value == NULL || f->state == FUTURE_VALID) {
+  
+  if(f == NULL || value == NULL
+  	|| (f->state == FUTURE_VALID && f->flag != FUTURE_QUEUE)) {
     return SYSERR;
+  }
+
+  pid32 curr_pid = getpid();
+
+  if(f->flag == FUTURE_QUEUE){
+  	if(f->get_queue == NULL){
+      enqueue_process(&f->set_queue, curr_pid);
+      printf("[Process: %d] Sent to Suspend\n",  curr_pid);
+      suspend(curr_pid);
+  	}
+  	else {
+  	  pid32 cons_pid = dequeue_process(&f->get_queue);
+	  resume(cons_pid);
+  	}
   }
 
   f->value = (int *)getmem(sizeof(int));
@@ -34,7 +50,7 @@ syscall future_set(future* f, int* value)
       resume(f->pid);
     }
   }
-  if(f->flag == FUTURE_SHARED){
+  else if(f->flag == FUTURE_SHARED){
       //printf("Main PID %d",f->get_queue);
     while(f->get_queue != NULL){
 		pid32 cons_pid = dequeue_process(&f->get_queue);

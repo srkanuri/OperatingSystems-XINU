@@ -30,12 +30,23 @@ syscall future_get(future* f, int* value)
     value = *f->value;
     f->state = FUTURE_EMPTY;
   }
-  else{
+  else if(f->flag == FUTURE_SHARED){
       //printf("%d\n",f->get_queue);
       enqueue_process(&f->get_queue, curr_pid);
       //printf("%d\n",f->get_queue);
       printf("[Process: %d] Sent to Suspend\n",  curr_pid);
       suspend(curr_pid);
+  }
+  else if(f->flag == FUTURE_QUEUE){
+  	  if(f->set_queue == NULL){
+        enqueue_process(&f->get_queue, curr_pid);
+        printf("[Process: %d] Sent to Suspend\n",  curr_pid);
+        suspend(curr_pid);
+  	  }
+  	  else {
+  	    pid32 cons_pid = dequeue_process(&f->set_queue);
+	    resume(cons_pid);
+  	  }
   }
   return OK;
 }

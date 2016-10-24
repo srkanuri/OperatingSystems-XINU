@@ -43,6 +43,7 @@ syscall future_set(future* f, int* value)
       pid32 cons_pid = dequeue_process(&f->get_queue);
       resume(cons_pid);
       }
+    future_free(f);
   }
   else{
     if(f->get_queue == NULL){

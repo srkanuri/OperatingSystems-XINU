@@ -27,6 +27,8 @@ future* future_alloc(int future_flag)
 
     fut->flag = future_flag;
     fut->state = FUTURE_EMPTY;
+    fut->get_queue = NULL; 
+    fut->set_queue = NULL;
   }
   
   return fut;  

@@ -27,13 +27,20 @@ syscall future_set(future* f, int* value)
   }
 
   f->value = *value;
-  
-  if(f->state == FUTURE_WAITING) {
-    printf("[Process: %d] Resuming process %d\n", getpid(), f->pid);
-    resume(f->pid);
-  }
   f->state = FUTURE_VALID;
-
+  if(f->flag == FUTURE_EXCLUSIVE){
+    if(f->state == FUTURE_WAITING) {
+      printf("[Process: %d] Resuming process %d\n", getpid(), f->pid);
+      resume(f->pid);
+    }
+  }
+  if(f->flag == FUTURE_SHARED){
+      //printf("Main PID %d",f->get_queue);
+      while(f->get_queue != NULL){
+	pid32 cons_pid = dequeue_process(&f->get_queue);
+	resume(cons_pid);
+      }
+  }
   return OK;
 }
 

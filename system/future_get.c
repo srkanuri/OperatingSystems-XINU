@@ -19,15 +19,24 @@ syscall future_get(future* f, int* value)
   if(f == NULL || value == NULL || f->state == FUTURE_WAITING) {
     return SYSERR;
   }
-  
-  if( f->state == FUTURE_EMPTY ) {
-    f->pid = getpid();
-    f->state = FUTURE_WAITING;
-    printf("[Process: %d] Set to Suspend\n",  f->pid);
-    suspend(f->pid);    
+  pid32 curr_pid = getpid();
+  if(f->flag == FUTURE_EXCLUSIVE){
+    if( f->state == FUTURE_EMPTY ) {
+      f->pid = curr_pid;
+      f->state = FUTURE_WAITING;
+      printf("[Process: %d] Set to Suspend\n",  f->pid);
+      suspend(f->pid);
+    }
+    value = *f->value;
+    f->state = FUTURE_EMPTY;
   }
-  value = *f->value;
-  f->state = FUTURE_EMPTY;
+  else{
+      //printf("%d\n",f->get_queue);
+      enqueue_process(&f->get_queue, curr_pid);
+      //printf("%d\n",f->get_queue);
+      printf("[Process: %d] Sent to Suspend\n",  curr_pid);
+      suspend(curr_pid);
+  }
   return OK;
 }
 

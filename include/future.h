@@ -30,8 +30,8 @@ typedef struct futent
   int flag;		//FUTURE_EXCLUSIVE only
   int state;         	//FUTURE_EMPTY, FUTURE_WAITING, FUTURE_VALID
   pid32 pid;            //Process ID of the waiting process
-  queue set_queue;
-  queue get_queue;
+  fqueue* set_queue;
+  fqueue* get_queue;
 } future;
 
 /* Interfaces for futures system calls */

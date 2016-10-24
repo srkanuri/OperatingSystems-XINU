@@ -75,19 +75,25 @@ shellcmd xsh_prodcons(int nargs, char *args[])
      f2 = future_alloc(FUTURE_SHARED);
      f3 = future_alloc(FUTURE_QUEUE);
  
-     /*//FUTURE_EXCLUSIVE
+     //FUTURE_EXCLUSIVE
+     printf("\n\nFUTURE EXCLUSIVE\n");
      resume( create(future_cons, 1024, 20, "fcons1", 1, f1) );
      resume( create(future_prod, 1024, 20, "fprod1", 1, f1) );
-     */
+     
+     sleep(1);
 
-     /*//FUTURE_SHARED
+     //FUTURE_SHARED
+     printf("\n\nFUTURE SHARED\n");
      resume( create(future_cons, 1024, 20, "fcons2", 1, f2) );
      resume( create(future_cons, 1024, 20, "fcons3", 1, f2) );
      resume( create(future_cons, 1024, 20, "fcons4", 1, f2) ); 
      resume( create(future_cons, 1024, 20, "fcons5", 1, f2) );
-     resume( create(future_prod, 1024, 20, "fprod2", 1, f2) );*/
+     resume( create(future_prod, 1024, 20, "fprod2", 1, f2) );
+
+     sleep(1);
 
      // FUTURE_QUEUE
+     printf("\n\nFUTURE QUEUE\n");
      resume( create(future_cons, 1024, 20, "fcons6", 1, f3) );
      resume( create(future_cons, 1024, 20, "fcons7", 1, f3) );
      resume( create(future_cons, 1024, 20, "fcons7", 1, f3) );

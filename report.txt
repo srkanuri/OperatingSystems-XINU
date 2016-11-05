@@ -1,0 +1,20 @@
+***************************************************************
+* Team: Srikanth Kanuri (srkanuri)
+*       Mangirish Wagle (mawagle)
+* Date Created: 10/23/2016
+* Assignment: 5
+***************************************************************
+  **************    ASSIGNMENT 5 REPORT     *****************
+***************************************************************
+
+We implemented the two other modes of futures namely FUTURE_SHARED and FUTURE_QUEUE.
+There were two additional members added to future data structure, set_queue and get_queue.
+The data structure used for both the queues is single linked list, for the reason that the enqueue and dequeue operations are simpler to implement with single linked list.
+We learnt how the FUTURE_SHARED mode handles the one to many mapping between producers and consumers. All the consumers arriving before the producer are suspended and enqueued, until the producer produces the value. After the producer has produced the value, all the enqueued consumers are dequeued and resumed.
+We learned how the FUTURE_QUEUE mode handles the many to many mapping between producers and consumers. If a consumer arrives before any producer sharing the future, it is enqueued, and vice versa. Also, if a producer arrives and finds consumers enqueued, it dequeues one cosumer and resumes it. Similarly, if the consumer arrived or resumed finds producer enqueued, it dequeues one producer and resumes the same.
+
+Task Distribution:-
+1) Creating a data structure for future queues. -> Srikanth
+2) Modifying the future header file. -> Mangirish
+3) Changes in future_get and future_set for FUTURE_SHARED. -> Srikanth
+4) Changes in future_get and future_set for FUTURE_QUEUE. -> Mangirish

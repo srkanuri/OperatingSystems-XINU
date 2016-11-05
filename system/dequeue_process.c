@@ -12,9 +12,7 @@ pid32 dequeue_process(fqueue** procq) {
 
   fqueue* front_node = *procq;
 
-  if((*procq)->next != NULL) {
-    *procq = (*procq)->next;
-  }
+  *procq = (*procq)->next;
 
   pid32 procid = front_node->pid;
 

@@ -16,8 +16,12 @@ ifndef PLATFORM
 $(error PLATFORM is not set. Edit your Makedefs file and add 'PLATFORM=arm-qemu'or 'PLATFORM=arm-bbb')
 endif
 
+ifeq ($(MMU),true)
+	VM = -DMMU
+endif
+
 ifeq ($(PLATFORM),arm-qemu)
-	PLAT_CFLAGS =  -DARM_QEMU -mcpu=arm1176jz-s -ggdb3
+	PLAT_CFLAGS =  -DARM_QEMU $(VM) -mcpu=arm1176jz-s -ggdb3
 	PLAT_LOADADDR = 0x00010000
 else ifeq ($(PLATFORM),arm-bbb)
 	PLAT_CFLAGS =  -DARM_BBB -mcpu=cortex-a8
@@ -162,7 +166,7 @@ configure:
 
 clean:
 	@echo removing .o files
-	@rm -f ${LD_LIST}
+	@rm -f binaries/*.o
 	@echo   removing configuration files ...
 	@rm -f $(CONFH) $(CONFC)
 	@(cd $(TOPDIR)/config; make clean)

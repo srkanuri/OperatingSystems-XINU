@@ -3,7 +3,6 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
-#include <fs.h>
 
 
 #if FS
@@ -24,6 +23,9 @@ char block_cache[512];
 
 #define NUM_FD 16
 struct filetable oft[NUM_FD];
+
+int open_file_count = 0;
+
 int next_open_fd = 0;
 
 
@@ -212,6 +214,163 @@ void fs_printfreemask(void) {
     }
   }
   printf("\n");
+}
+
+int fs_mount(int dev) {
+
+}
+
+int fs_get_inode_id_by_filename(int dev, char *filename, int *inode_id){
+
+  if(filename == NULL) {
+    return SYSERR;
+  }
+
+  *inode_id = NULL;
+
+  struct directory root_dir = fsd.root_dir;
+
+  struct dirent dir_ent;
+
+  for(int x = 0; x < fsd.ninodes; x++) {
+    dir_ent = root_dir.entry[x];
+
+    if(strcmp(filename, dir_ent.name) == 0) {
+      *inode_id = dir_ent.inode_num;
+      break;
+    }
+  }
+
+  return OK;
+
+}
+
+int fs_get_dirent_from_inodeid(int dev, int inode_id, struct dirent *dir_ent_ret){
+
+  if(inode_id == NULL) {
+    return NULL;
+  }
+
+  //dir_ent_ret = NULL;
+
+  struct dirent dir_ent;
+
+  struct directory root_dir = fsd.root_dir;
+
+  for(int x = 0; x < fsd.ninodes; x++) {
+    dir_ent = root_dir.entry[x];
+
+    if(inode_id == dir_ent.inode_num) {
+      *dir_ent_ret = dir_ent;
+      break;
+    }
+  }
+
+  return OK;
+
+}
+
+/* Function to check if file is already open. */
+int check_is_file_open(char *filename) {
+
+  // TODO: Implement
+  return 0;
+
+}
+
+/* System function to open the file. */
+int fs_open(char *filename, int flags){
+
+  // Check if file already open.
+  if(check_is_file_open(filename)) {
+    kprintf("ERROR: File %s already open.", filename);
+    return SYSERR;
+  }
+
+  int *file_inode_id =  NULL;
+  struct inode *file_inode = NULL;
+
+  if(fs_get_inode_id_by_filename(dev0, filename, file_inode_id) != OK) {
+    return SYSERR;
+  }
+
+  if(fs_get_inode_by_num(dev0, file_inode_id, file_inode) != OK) {
+    return SYSERR;
+  }
+
+  struct filetable file_table_entry;
+
+  file_table_entry.state = FSTATE_OPEN;
+  file_table_entry.fileptr = 0;
+  if(fs_get_dirent_from_inodeid(dev0, *file_inode_id, file_table_entry.de) != OK) {
+    return SYSERR;
+  }
+  file_table_entry.in = *file_inode;
+
+  // Add entry to file table.
+  oft[open_file_count++] = file_table_entry;
+
+  return OK;
+}
+
+
+/* Function to check if file is already open. */
+int check_is_file_closed(int fd) {
+
+  //return !check_is_file_open(filename);
+  return 0;
+
+}
+
+int fs_close(int fd) {
+
+  if(check_is_file_closed(fd)) {
+    kprintf("ERROR: File with id %d already closed.", fd);
+    return SYSERR;
+  }
+
+  struct filetable *ftable = NULL;
+  for( int x = 0; x < open_file_count; x++ ) {
+    if( oft[x].in.id == fd ) {
+      *ftable = oft[x];
+    }
+  }
+
+  // Checks if intry in open file table.
+  if(ftable == NULL) {
+    kprintf("ERROR: Open File Table entry not found. File with id %d might be already closed.", fd);
+    return SYSERR;
+  }
+
+  // Checks if he entry in open file table is valid.
+  if(ftable->state == FSTATE_CLOSED) {
+    kprintf("ERROR: State in the file table is not valid. File with id %d might be already closed.", fd);
+    return SYSERR;
+  }
+
+  // Change the state to closed.
+  ftable->state = FSTATE_CLOSED;
+
+  // Free the OFT location.
+  freemem(&oft[--open_file_count], sizeof(oft[--open_file_count]));
+
+  return OK;
+}
+
+int fs_create(char *filename, int mode){
+
+}
+
+int fs_seek(int fd, int offset){
+
+}
+
+int fs_read(int fd, void *buf, int nbytes){
+
+}
+
+int fs_write(int fd, void *buf, int nbytes){
+
 }
 
 #endif /* FS */

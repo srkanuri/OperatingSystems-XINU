@@ -4,7 +4,6 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
-#include <fs.h>
 
 extern int dev0_numblocks;
 extern int dev0_blocksize;

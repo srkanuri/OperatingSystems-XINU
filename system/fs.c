@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <string.h>
 
-
 #if FS
 #include <fs.h>
 
@@ -24,6 +23,8 @@ char block_cache[512];
 #define NUM_FD 16
 struct filetable oft[NUM_FD];
 
+// Global variable for inode number.
+int inode_count = 0;
 int open_file_count = 0;
 
 int next_open_fd = 0;
@@ -218,6 +219,9 @@ void fs_printfreemask(void) {
 
 int fs_mount(int dev) {
 
+  // TODO: What else can be done?
+  fsd.root_dir.numentries = 0;
+
 }
 
 int fs_get_inode_id_by_filename(int dev, char *filename, int *inode_id){
@@ -226,7 +230,7 @@ int fs_get_inode_id_by_filename(int dev, char *filename, int *inode_id){
     return SYSERR;
   }
 
-  *inode_id = NULL;
+  inode_id = getmem(sizeof(int));
 
   struct directory root_dir = fsd.root_dir;
 
@@ -246,10 +250,6 @@ int fs_get_inode_id_by_filename(int dev, char *filename, int *inode_id){
 }
 
 int fs_get_dirent_from_inodeid(int dev, int inode_id, struct dirent *dir_ent_ret){
-
-  if(inode_id == NULL) {
-    return NULL;
-  }
 
   //dir_ent_ret = NULL;
 
@@ -281,34 +281,48 @@ int check_is_file_open(char *filename) {
 /* System function to open the file. */
 int fs_open(char *filename, int flags){
 
+  // Check if max open file reached.
+  if(open_file_count == NUM_FD) {
+    kprintf("ERROR: Maximum limit of open file has been reached.");
+    return SYSERR;
+  }
+
   // Check if file already open.
   if(check_is_file_open(filename)) {
-    kprintf("ERROR: File %s already open.", filename);
+    kprintf("\nERROR: File %s already open.", filename);
     return SYSERR;
   }
 
-  int *file_inode_id =  NULL;
-  struct inode *file_inode = NULL;
+  int file_inode_id =  NULL;
+  struct inode file_inode;
 
-  if(fs_get_inode_id_by_filename(dev0, filename, file_inode_id) != OK) {
+  if(fs_get_inode_id_by_filename(dev0, filename, &file_inode_id) != OK) {
     return SYSERR;
   }
 
-  if(fs_get_inode_by_num(dev0, file_inode_id, file_inode) != OK) {
+  if(fs_get_inode_by_num(dev0, file_inode_id, &file_inode) != OK) {
     return SYSERR;
   }
+
+  file_inode.flags = flags;
 
   struct filetable file_table_entry;
 
-  file_table_entry.state = FSTATE_OPEN;
+  file_table_entry.state = FSTATE_OPEN;  // set state to open.
   file_table_entry.fileptr = 0;
-  if(fs_get_dirent_from_inodeid(dev0, *file_inode_id, file_table_entry.de) != OK) {
+  file_table_entry.de = getmem(sizeof(struct dirent));
+  if(fs_get_dirent_from_inodeid(dev0, file_inode_id, file_table_entry.de) != OK) {
     return SYSERR;
   }
-  file_table_entry.in = *file_inode;
+  file_table_entry.in = file_inode;
 
-  // Add entry to file table.
-  oft[open_file_count++] = file_table_entry;
+  /// Add entry to file table.
+
+  oft[file_inode_id] = file_table_entry;
+
+  open_file_count++;
+
+  /*kprintf("File table entry inode %d", file_table_entry.in.id);*/
 
   return OK;
 }
@@ -324,40 +338,69 @@ int check_is_file_closed(int fd) {
 
 int fs_close(int fd) {
 
+  struct inode *file_inode = NULL;
+
   if(check_is_file_closed(fd)) {
-    kprintf("ERROR: File with id %d already closed.", fd);
+    kprintf("\nERROR: File with id %d already closed.", fd);
     return SYSERR;
   }
 
   struct filetable *ftable = NULL;
-  for( int x = 0; x < open_file_count; x++ ) {
-    if( oft[x].in.id == fd ) {
-      *ftable = oft[x];
-    }
-  }
+  *ftable = oft[fd];
 
   // Checks if intry in open file table.
   if(ftable == NULL) {
-    kprintf("ERROR: Open File Table entry not found. File with id %d might be already closed.", fd);
+    kprintf("\nERROR: Open File Table entry not found. File with id %d might be already closed.", fd);
     return SYSERR;
   }
 
   // Checks if he entry in open file table is valid.
   if(ftable->state == FSTATE_CLOSED) {
-    kprintf("ERROR: State in the file table is not valid. File with id %d might be already closed.", fd);
+    kprintf("\nERROR: State in the file table is not valid. File with id %d might be already closed.", fd);
     return SYSERR;
   }
+
+  // Resetting the flags for the file in the inode.
+  if(fs_get_inode_by_num(dev0, fd, file_inode) != OK) {
+    return SYSERR;
+  }
+  file_inode->flags = NULL;
 
   // Change the state to closed.
   ftable->state = FSTATE_CLOSED;
 
   // Free the OFT location.
-  freemem(&oft[--open_file_count], sizeof(oft[--open_file_count]));
+  freemem(&oft[fd], sizeof(oft[fd]));
 
   return OK;
 }
 
 int fs_create(char *filename, int mode){
+
+  // Please note that since these are not pointers, memory allocation happens automatically.
+  struct inode new_inode;
+  struct dirent new_dir_ent;
+
+  new_inode.id = inode_count;
+  new_inode.flags = O_RDONLY;  // Default is set to readonly.
+  new_inode.nlink = 1;  // Initializing number of links to 1.
+  new_inode.device = dev0;
+  new_inode.size = 0;
+
+  fs_put_inode_by_num(dev0, new_inode.id, &new_inode);
+
+  new_dir_ent.inode_num = new_inode.id;
+  memset(new_dir_ent.name, 0, FILENAMELEN);
+  strcpy(new_dir_ent.name, filename);
+
+  fsd.root_dir.entry[fsd.root_dir.numentries] = new_dir_ent;
+
+  fsd.root_dir.numentries++;
+
+  // Incrementing the global inode count.
+  inode_count++;
+
+  return new_inode.id;
 
 }
 

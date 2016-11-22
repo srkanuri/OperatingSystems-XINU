@@ -60,7 +60,7 @@ void testbitmask(void);
     
     // Create test file
     fd = fs_create("Test_File", O_CREAT);
-       
+    //fs_open("Test_File", O_RDWR);
     // Fill buffer with random stuff
     for(i=0; i<SIZE; i++)
     {

@@ -25,14 +25,18 @@ struct filetable oft[NUM_FD];
 
 // Global variable for inode number.
 int inode_count = 0;
-int open_file_count = 0;
 
 int next_open_fd = 0;
+int inode_id=1;
 
+struct inode blank_inode;
+static int next_free_inode = 0;
+static int next_free_data_block;
 
 #define INODES_PER_BLOCK (fsd.blocksz / sizeof(struct inode))
 #define NUM_INODE_BLOCKS (( (fsd.ninodes % INODES_PER_BLOCK) == 0) ? fsd.ninodes / INODES_PER_BLOCK : (fsd.ninodes / INODES_PER_BLOCK) + 1)
 #define FIRST_INODE_BLOCK 2
+#define FIRST_DATA_BLOCK (2 + NUM_INODE_BLOCKS)
 
 int fs_fileblock_to_diskblock(int dev, int fd, int fileblock);
 
@@ -282,7 +286,7 @@ int check_is_file_open(char *filename) {
 int fs_open(char *filename, int flags){
 
   // Check if max open file reached.
-  if(open_file_count == NUM_FD) {
+  if(next_open_fd == NUM_FD) {
     kprintf("ERROR: Maximum limit of open file has been reached.");
     return SYSERR;
   }
@@ -320,7 +324,7 @@ int fs_open(char *filename, int flags){
 
   oft[file_inode_id] = file_table_entry;
 
-  open_file_count++;
+  next_open_fd++;
 
   /*kprintf("File table entry inode %d", file_table_entry.in.id);*/
 
@@ -376,7 +380,6 @@ int fs_close(int fd) {
 }
 
 int fs_create(char *filename, int mode){
-
   // Please note that since these are not pointers, memory allocation happens automatically.
   struct inode new_inode;
   struct dirent new_dir_ent;
@@ -405,15 +408,124 @@ int fs_create(char *filename, int mode){
 }
 
 int fs_seek(int fd, int offset){
-
+  if(oft[fd].state != FSTATE_OPEN) {
+    printf("File not open\n");
+    return SYSERR;	
+  }
+  
+  if ( (offset + oft[fd].fileptr) < 0 ) {
+    printf("Reached File Start\n");
+    return SYSERR;
+  }
+  
+  if( (offset + oft[fd].fileptr) >= oft[fd].in.size ) {
+    printf("Seek position is greater than File Size\n");
+    return SYSERR;
+  }
+  
+  oft[fd].fileptr += offset;
+  return OK;
 }
 
 int fs_read(int fd, void *buf, int nbytes){
-
+  int block, offset, length;
+  int i, m;
+  int num_bytes_read = nbytes;
+  int bytes_transferred = 0;
+  
+  if(oft[fd].state != FSTATE_OPEN) {
+    printf("file is not open\n");
+    return SYSERR;	
+  }
+  
+  if( (nbytes + oft[fd].fileptr) > oft[fd].in.size ) {
+    printf("Read bytes are more than the file size\n");
+    return SYSERR;
+  }
+  
+  // extract each block from disk and copy to buffer	
+  while(nbytes > 0) {
+    block = oft[fd].in.blocks[oft[fd].fileptr/MDEV_BLOCK_SIZE];
+    offset = 0;
+    length = nbytes < MDEV_BLOCK_SIZE ? nbytes : MDEV_BLOCK_SIZE;
+    if (block == -1)
+      break;
+    if(bs_bread(dev0, block, offset, buf+bytes_transferred, length)!=OK) {
+      printf("block write failed\n");
+      return SYSERR;
+    }
+    oft[fd].fileptr += length;
+    nbytes -= length;
+    bytes_transferred += length;
+  }	
+  return num_bytes_read;
 }
 
 int fs_write(int fd, void *buf, int nbytes){
+  int block, offsetVal, length;
+  int i, m;	
+  int eofInt = 0;
+  int bytes_transferred = 0;	
+  
+  int bytesCount = nbytes;
+  if(oft[fd].state != FSTATE_OPEN) {
+    printf("file is not open\n");
+    return SYSERR;	
+  }
+  if ((nbytes + oft[fd].fileptr) > oft[fd].in.size) {
+    eofInt = 1;
+  }
+  block = oft[fd].in.blocks[oft[fd].fileptr/MDEV_BLOCK_SIZE];
+  offsetVal = oft[fd].fileptr % MDEV_BLOCK_SIZE;
+  length = nbytes < (MDEV_BLOCK_SIZE - offsetVal) ? nbytes : (MDEV_BLOCK_SIZE - offsetVal);
 
+  printf("Writing Data: %s\n", (char *) buf);
+  
+  if (bs_bwrite(dev0, block, offsetVal, buf, length)!=OK) {
+    printf("block write failed\n");
+    return SYSERR;
+  }
+  oft[fd].fileptr += length;
+  nbytes -= length;
+  bytes_transferred += length;
+  while(nbytes > 0) {
+    for(i=FIRST_DATA_BLOCK; i<fsd.nblocks; i++) {
+      m = fs_getmaskbit(next_free_data_block);
+      if(m == 0) {
+	break;
+      }
+      next_free_data_block++;
+      if(next_free_data_block >= MDEV_NUM_BLOCKS)
+	next_free_data_block = FIRST_DATA_BLOCK;
+    }
+    if(m != 0) {
+      printf("ERROR: Disk Full\n");
+      return SYSERR;			
+    }
+    fs_setmaskbit(next_free_data_block);
+    fs_setmaskbit(BM_BLK);
+    bs_bwrite(dev0, BM_BLK, 0, fsd.freemask, fsd.freemaskbytes);
+    
+    oft[fd].in.blocks[oft[fd].fileptr/MDEV_BLOCK_SIZE] = next_free_data_block;
+    
+    block = oft[fd].in.blocks[oft[fd].fileptr/MDEV_BLOCK_SIZE];
+    offsetVal = 0;
+    length = nbytes < MDEV_BLOCK_SIZE ? nbytes : MDEV_BLOCK_SIZE;
+    if (bs_bwrite(dev0, block, offsetVal, buf+bytes_transferred, length)!=OK) {
+      printf("block write failed\n");
+      return SYSERR;
+    }
+    oft[fd].fileptr += length;
+    nbytes -= length;
+    bytes_transferred += length;
+  }
+  if (eofInt) {
+    oft[fd].in.size = oft[fd].fileptr;
+  }
+  
+  /* write inode to disk */
+  fs_put_inode_by_num(dev0, oft[fd].in.id, &oft[fd].in);
+  return bytesCount;
 }
 
 #endif /* FS */

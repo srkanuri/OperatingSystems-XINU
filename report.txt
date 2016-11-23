@@ -1,0 +1,28 @@
+***************************************************************
+* Team: Srikanth Kanuri (srkanuri)
+*       Mangirish Wagle (mawagle)
+* Date Created: 11/21/2016
+* Assignment: 7
+***************************************************************
+  **************    ASSIGNMENT 7 REPORT     *****************
+***************************************************************
+
+In this assignment we implemented 7 functions create, open, close, mount, read, write and seek
+by implementing a file system in xinu. We learnt how to manage initalize the file system and 
+create a directory structure. We implemented the File Table and maintained a list of open files
+in the table. We created the inode structure and added them on to open files and also wrote them
+to disk. Once open, we implement write and read functions to write/read the data to/from data blocks 
+and assign them to the inode structure. The seek function will set the offset in the file table 
+from which the read and write functions will modify/read the file.
+
+Following is the lifecycle of a file:
+Create -> Open(implicit) -> Write -> Seek -> Read -> Close
+
+We have implemented and tested the code for the following scenarios:
+1. Create single file.
+2. Create multiple files. (/// -> 3 comment lines in xsh_fstest.c)
+3. Close and reopen an existing file. (//// -> 4 comment lines in xsh_fstest.c)
+
+Task Distribution:-
+Srikanth  -> Implemented read, write and seek functions and integrating the functions.
+Mangirish -> Implemented create, open, mount and close functions.

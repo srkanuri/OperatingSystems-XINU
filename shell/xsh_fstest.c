@@ -18,7 +18,7 @@ void testbitmask(void);
  shellcmd xsh_fstest(int nargs, char *args[])
 {
     int rval;
-    int fd, i, j;
+    int fd, i, j;//fd1
     char *buf1, *buf2;
     
     
@@ -53,6 +53,7 @@ void testbitmask(void);
 
     bs_mkdev(0, MDEV_BLOCK_SIZE, MDEV_NUM_BLOCKS); /* device "0" and default blocksize (=0) and count */
     fs_mkfs(0,DEFAULT_NUM_INODES); /* bsdev 0*/
+    fs_mount(0);
     testbitmask();
     
     buf1 = getmem(SIZE*sizeof(char));
@@ -60,7 +61,9 @@ void testbitmask(void);
     
     // Create test file
     fd = fs_create("Test_File", O_CREAT);
-    //fs_open("Test_File", O_RDWR);
+    /// Uncomment 3 comments for 2nd file test
+    ///fd1 = fs_create("Test_File1", O_CREAT);
+    
     // Fill buffer with random stuff
     for(i=0; i<SIZE; i++)
     {
@@ -82,7 +85,7 @@ void testbitmask(void);
     
     //read the file 
     rval = fs_read(fd, buf2, rval);
-    buf2[rval] = EOF; // TODO: Write end of file symbol i.e. slash-zero instead of EOF. I can not do this because of WIKI editor limitation    
+    buf2[rval] = '\0';
 
     if(rval == 0)
     {
@@ -90,13 +93,25 @@ void testbitmask(void);
         goto clean_up;
     }
         
-    printf("\n\rContent of file %s",buf2);
-    
+    printf("\n\rContents of Test_File: \n%s\n", buf2);
+    ///rval = fs_write(fd1,"abcd",4);
+    ///fs_seek(fd1,-rval);
+    ///rval = fs_read(fd1, buf1, rval);
+    ///buf1[rval] = '\0';
+    ///printf("\n\rContents of Test_File1: \n%s\n", buf1);
+    ///rval = fs_close(fd1);
     rval = fs_close(fd);
     if(rval != OK)
     {
         printf("\n\rReturn val for fclose : %d",rval);
     }
+    //// Uncomments 4 comment lines for reopening file test case
+    ////fd = fs_open("Test_File", O_RDWR);
+    ////rval = fs_read(fd, buf1, 1200);
+    ////buf1[rval] = '\0';
+    ////printf("\n\rContents of Test_File: \n%s\n", buf1);
+    
+    ////rval = fs_close(fd);
 
 clean_up:
     freemem(buf1,SIZE);

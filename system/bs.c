@@ -10,7 +10,7 @@ extern int dev0_blocksize;
 extern char *dev0_blocks;
 int dev0 = 0;
 
-#if FS
+//#if FS
 #include <fs.h>
 
 int bs_mkdev(int dev, int blocksize, int numblocks) {
@@ -84,4 +84,4 @@ int bs_bwrite(int dev, int block, int offset, void * buf, int len) {
 
 }
 
-#endif /* FS */
+//#endif /* FS */

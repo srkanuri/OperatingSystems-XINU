@@ -1,8 +1,8 @@
 #include <xinu.h>
+#include <fs.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
-#include <fs.h>
 #define SIZE 1200
 
 void testbitmask(void);
@@ -49,7 +49,7 @@ void testbitmask(void);
         return SYSERR;
     }
 
-#ifdef FS
+    //#ifdef FS
 
     bs_mkdev(0, MDEV_BLOCK_SIZE, MDEV_NUM_BLOCKS); /* device "0" and default blocksize (=0) and count */
     fs_mkfs(0,DEFAULT_NUM_INODES); /* bsdev 0*/
@@ -117,9 +117,9 @@ clean_up:
     freemem(buf1,SIZE);
     freemem(buf2,SIZE);
     
-#else
-    printf("No filesystem support\n");
-#endif
+    //#else
+    //printf("No filesystem support\n");
+    //#endif
 
     return OK;
 }

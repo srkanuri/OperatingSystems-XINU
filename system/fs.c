@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#if FS
+//#if FS
 #include <fs.h>
 
 static struct fsystem fsd;
@@ -477,4 +477,4 @@ int fs_write(int fd, void *buf, int nbytes){
   return bytes_moved;
 }
 
-#endif /* FS */
+//#endif /* FS */

@@ -1,5 +1,5 @@
-#ifndef FS_H
-#define FS_H
+//#ifndef FS
+//#define FS
 
 /* Modes of file*/ 
 #define O_CREAT 11 
@@ -92,4 +92,4 @@ int bs_bwrite(int bsdev, int block, int offset, void * buf, int len);
 void fs_printfreemask(void);
 void fs_print_fsd(void);
 
-#endif /* FS_H */
+//#endif /* FS */

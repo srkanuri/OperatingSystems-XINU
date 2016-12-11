@@ -71,9 +71,14 @@ void run_client(char *host, char *portnum, char *dataStr)
     struct sockaddr_in client_addr, server_addr;
     struct hostent *server;
 
+    int timeout = 5; //Timeout value for response in seconds.
+
     char *buffer = (char *)malloc(BUFFERSIZE*sizeof(char));
 
     port = atoi(portnum);
+
+    fd_set fds;                // fd set declare
+    struct timeval time_out; // Struct for Timeout value
 
     client_sfd = socket(AF_INET, SOCK_DGRAM, 0);
     if (client_sfd < 0)
@@ -116,22 +121,36 @@ void run_client(char *host, char *portnum, char *dataStr)
       report_error("ERROR writing to socket", &server_sfd, &client_sfd);
     }
 
-    bzero(buffer, BUFFERSIZE);
+    FD_ZERO(&fds);             // Clear the fd set
+    FD_SET(client_sfd, &fds);  // Set the client fd for select
 
-    n = recvfrom(client_sfd, buffer, BUFFERSIZE, 0, (struct sockaddr *) &server_addr, &clen);
-    if (n < 0)
+    time_out.tv_sec = 5;
+    time_out.tv_usec = 0;
+
+    // Waiting until timeout for SYNACK
+    if ( select(32, &fds, NULL, NULL, &time_out) == 0 )
     {
-      report_error("ERROR reading from socket", &server_sfd, &client_sfd);
+        printf("Response receiving timed out...\n");
     }
-    gettimeofday(&end_timev,NULL);
+    else
+    {
+        bzero(buffer, BUFFERSIZE);
 
-    printf("\nNumber of bytes received: %d\n", n);
+        n = recvfrom(client_sfd, buffer, BUFFERSIZE, 0, (struct sockaddr *) &server_addr, &clen);
+        if (n < 0)
+        {
+          report_error("ERROR reading from socket", &server_sfd, &client_sfd);
+        }
+        gettimeofday(&end_timev,NULL);
 
-    printf("Response:-\n%s\n",buffer);
-    //printf("return code:-\n%s\n",get_status_code(buffer));
+        printf("\nNumber of bytes received: %d\n", n);
 
-    printf("\nRequest sent at: %ld seconds and %ld microseconds\n", start_timev.tv_sec, start_timev.tv_usec);
-    printf("\nLast response received at: %ld seconds and %ld microseconds\n", end_timev.tv_sec, end_timev.tv_usec);
+        printf("Response:-\n%s\n",buffer);
+        //printf("return code:-\n%s\n",get_status_code(buffer));
+
+        printf("\nRequest sent at: %ld seconds and %ld microseconds\n", start_timev.tv_sec, start_timev.tv_usec);
+        printf("\nLast response received at: %ld seconds and %ld microseconds\n", end_timev.tv_sec, end_timev.tv_usec);
+    }
 
     free(requestData);
 

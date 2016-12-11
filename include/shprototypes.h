@@ -78,3 +78,6 @@ extern 	shellcmd xsh_hello	(int32,	char *[]);
 
 /* in file xsh_mmu.c */
 extern  shellcmd xsh_mmu	(int32, char *[]);
+
+/* in file xsh_netfutures.c */
+extern  shellcmd xsh_netfutures	(int32, char *[]);

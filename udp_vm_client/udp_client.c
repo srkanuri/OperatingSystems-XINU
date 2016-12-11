@@ -85,7 +85,7 @@ void run_client(char *host, char *portnum, char *dataStr)
 
     if (server == NULL)
     {
-        fprintf(stderr,"ERROR, Host not found\n", &server_sfd, &client_sfd);
+        fprintf(stderr,"ERROR, Host not found\n");
         exit(0);
     }
 
@@ -146,7 +146,7 @@ void main(int argc, char *argv[])
 {
   if (argc < 4)
   {
-     fprintf(stderr,"usage %s <HOST> <PORT> <FILENAME>\n", argv[0]);
+     fprintf(stderr,"usage %s <HOST> <PORT> <MESSAGE>\n", argv[0]);
      exit(0);
    }
 

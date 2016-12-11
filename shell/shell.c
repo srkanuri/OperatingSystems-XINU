@@ -23,15 +23,16 @@ const	struct	cmdent	cmdtab[] = {
 	{"sleep",	FALSE,	xsh_sleep},
 	{"uptime",	FALSE,	xsh_uptime},
 #ifdef ARM_BBB
-  {"arp",		FALSE,	xsh_arp},
-  {"ipaddr",	FALSE,	xsh_ipaddr},
+	{"netfutures",  FALSE,  xsh_netfutures},
+	{"arp",		FALSE,	xsh_arp},
+	{"ipaddr",	FALSE,	xsh_ipaddr},
 	{"ping",	FALSE,	xsh_ping},
 	{"udp",		FALSE,	xsh_udpdump},
 	{"udpecho",	FALSE,	xsh_udpecho},
 	{"udpeserver",	FALSE,	xsh_udpeserver},
 #endif
 	{"test_mmu", 	FALSE, 	xsh_mmu},
-  {"?",		FALSE,	xsh_help}
+	{"?",		FALSE,	xsh_help}
 };
 
 uint32	ncmd = sizeof(cmdtab) / sizeof(struct cmdent);
@@ -54,8 +55,8 @@ uint32	ncmd = sizeof(cmdtab) / sizeof(struct cmdent);
 /************************************************************************/
 
 process	shell (
-		did32	dev		/* ID of tty device from which	*/
-	)				/*   to accept commands		*/
+	       did32	dev		/* ID of tty device from which	*/
+	       )				/*   to accept commands		*/
 {
 	char	buf[SHELL_BUFLEN];	/* Input line (large enough for	*/
 					/*   one line from a tty device	*/

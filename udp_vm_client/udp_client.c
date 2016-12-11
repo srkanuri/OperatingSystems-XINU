@@ -16,33 +16,6 @@
 struct timeval start_timev, end_timev;  //Structs to use for gettimeoftheday
 
 /*
- * Utility function to trim white spaces from string.
- * Called by the run functions to trim file names fetched from file for persistent connections.
- */
-char *trim_white_spaces(char *string)
-{
-  // Trim leading space
-  while(isspace(*string))
-  {
-    string++;
-  }
-
-  if(*string == 0)  // If all spaces
-    return string;
-
-  char *ending;
-
-  // Trim trailing space
-  ending = string + strlen(string) - 1;
-  while(ending > string && isspace(*ending)) ending--;
-
-  // Write new null terminator
-  *(ending+1) = 0;
-
-  return string;
-}
-
-/*
  * Error reporting function. Closes the socket file descriptors before exiting
  */
 void report_error(const char *message, int *server_sfd, int *client_sfd)

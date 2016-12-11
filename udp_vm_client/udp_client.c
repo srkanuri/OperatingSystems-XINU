@@ -1,5 +1,5 @@
 // UDP Client sending and receiving data over UDP
-// Author: Mangirish Wagle
+// Authors: Mangirish Wagle, Srikanth Kanuri
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -77,6 +77,8 @@ shellcmd xsh_netfutures(int nargs, char *args[])
 	rval = gettime(&t1);
 	//printf("Initial %u, %d\n",t1,retval);
 	cons_ready = 1;
+	memset(obuff, 0, sizeof obuff);
+	memset(buff, 0, sizeof buff);
       }
       retval = udp_recvaddr(slot, &remip, &remport, buff,sizeof(buff), 600000);
       //printf("Receiving %d, %d, %d\n",retval, TIMEOUT, SYSERR);
@@ -90,6 +92,7 @@ shellcmd xsh_netfutures(int nargs, char *args[])
 	printf("Request Message\t: %s\n",buff);
 	//f1->value = &buff;
 	resume( create(future_prod, 1024, 20, "fprod1", 1, f1) );
+	sleep(1);
 	rval = gettime(&t2);
 	//printf("Final %u, %d, %d\n",t2,retval, f1->value);
 	sprintf(obuff,"Input Request\t: %s\nFutures Output\t: %d\nWait Time\t: %u\n",buff,(f1->value),(t2-t1));
@@ -103,7 +106,6 @@ shellcmd xsh_netfutures(int nargs, char *args[])
 	  return 1;
 	}
 	cons_ready = 0;
-	sleep(1);
       }
     }
   }

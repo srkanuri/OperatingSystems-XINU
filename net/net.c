@@ -3,6 +3,8 @@
 #include <xinu.h>
 #include <stdio.h>
 
+extern	struct arpentry  arpcache[ARP_SIZ];	/* ARP cache			*/
+
 struct	network	NetData;
 bpid32	netbufpool;
 
@@ -72,10 +74,43 @@ process	netin ()
 {
 	struct	netpacket *pkt;		/* Ptr to current packet	*/
 	int32	retval;			/* Return value from read	*/
+	struct	arpentry  *arptr;	/* Ptr to ARP cache entry	*/
+
+	uint32	current_time;  /* Variable storing current time */
+
+	uint32	arpentry_valid_time = 300;  /* ARP entry valid time in seconds. Setting to 5 mins */
+
+	intmask	mask;	/* Saved interrupt mask	*/
 
 	/* Do forever: read a packet from the network and process */
-
 	while(1) {
+
+		gettime(&current_time);
+
+		/* Ensure only one process uses ARP at a time */
+		mask = disable();
+
+		/* Check for stale ARP Table entries */
+		for (uint32 slot=0; slot < ARP_SIZ; slot++) {
+			arptr = &arpcache[slot];
+
+			/* Skip table entries that are unused */
+
+			if (arptr->arstate == AR_FREE) {
+				continue;
+			}
+
+			/* If the create time is <arpentry_valid_time> seconds or older, mark the state as free. */
+			if ((current_time - arptr->create_time) >= arpentry_valid_time) {
+				//kprintf("\nCurrent: %d | Create: %d | State: %d | Invalidating ARP Entry for %d\n", current_time, arptr->create_time, arptr->arstate, arptr->arhaddr);
+				//memset((void*)arptr->arpaddr, 0, ARP_HALEN);
+				//memset((void*)	arptr->arhaddr, 0, ARP_HALEN);
+				arptr->arstate = AR_FREE;
+				//arptr->create_time = 0;
+			}
+		}
+
+		restore(mask);
 
 		/* Allocate a buffer */
 

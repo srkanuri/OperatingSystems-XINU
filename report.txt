@@ -1,0 +1,25 @@
+***************************************************************
+* Team: Srikanth Kanuri (srkanuri)
+*       Mangirish Wagle (mawagle)
+* Date Created: 12/11/2016
+* Assignment: 8
+***************************************************************
+  **************    ASSIGNMENT 8 REPORT     *****************
+***************************************************************
+
+In this assignment we implemented network functionality in Xinu. We implemented a UDP client in
+Linux VM and initiated a comminication between XINU and Linux using UDP. We checked for the stale
+ARP entries and freed them if they are present for more than 5 minutes. We also made a network 
+version of futures where the server acts as the consumer and the client acts as a producer. Once
+the server starts listening, the client can request messge from server. This invokes the futures
+producer and generates a value for consumer so that it can be sent back to client. We are sending 
+the request message, the futures value and the time taken by consumer in waiting.
+
+We have implemented and tested the code for the following scenarios:
+1. 17.2 can be executed by running udpeserver in XINU and udp_client.c in udp_vm_client folder.
+2. 17.3 can be tested by doing a "ping 192.168.1.100" in XINU followed by checking arp.
+3. 17.4 can be executed by running netfutures in XINU and udp_client.c in udp_vm_client folder.
+
+Task Distribution:-
+Srikanth  -> Implemented 17.4
+Mangirish -> Implemented 17.2 and 17.3

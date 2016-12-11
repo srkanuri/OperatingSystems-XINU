@@ -252,6 +252,8 @@ void	arp_in (
 		arptr->arpaddr = pktptr->arp_sndpa;
 		memcpy(arptr->arhaddr, pktptr->arp_sndha, ARP_HALEN);
 		arptr->arstate = AR_RESOLVED;
+		gettime(&arptr->create_time);
+		//kprintf("\nARP Entry created at %d\n", arptr->create_time);
 	}
 
 	/* Hand-craft an ARP reply packet and send back to requester	*/

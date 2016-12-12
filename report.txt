@@ -17,7 +17,42 @@ the request message, the futures value and the time taken by consumer in waiting
 
 We have implemented and tested the code for the following scenarios:
 1. 17.2 can be executed by running udpeserver in XINU and udp_client.c in udp_vm_client folder.
+
+The udp_client sends out UDP datagram to the target machine (Xinu BBB) with a string that you provide to it through comand line.
+
+**Steps to run:-
+a) Boot up BBB and start UDP echo server with the command '$udpeserver'. Note the IP address of the Xinu. We always found 192.168.1.101 as the IP address assigned to the BBB
+b) On the VM, # cd udp_vm_client
+c) #gcc -o udp_client udp_client.c
+d) #./udp_client <BBB IP> <UDP Echo Port> <String to pass>  // UDP Echo server on Xinu is configured to run on port 7.
+You should see an output as follows:-
+$ ./udp_client 192.168.1.101 7 Testing
+
+Request Data: Testing
+
+Number of bytes received: 66
+Response:-
+Testing
+
+Request sent at: 1481489559 seconds and 979043 microseconds
+
+Last response received at: 1481489559 seconds and 985739 
+---------------------------------------------------------------------
+
 2. 17.3 can be tested by doing a "ping 192.168.1.100" in XINU followed by checking arp.
+**Key implementation points:-
+To keep track of the age of ARP entries, we added another element to the arpentry struct for creation time in arp.h.
+Whenever the ARP entry is added, the procedure would now also set the creation time fetched by gettime() system function in arp.c.
+We added a code to 'netin' process in net.c to check for invalid (5 mins or older) entries in ARP table in netin and de-validate the same by setting state to AR_FREE. The creation time is compared against the current time fetched by gettime() function.
+
+**To Test:-
+a) Compile the code and Boot Xinu on BBB.
+b) Ping the VM (typically 192.168.1.100) through BBB by running $ping 192.168.1.100
+c) Check the output of $arp and you should see an entry in the table for VM host.
+d) Wait for 5 mins (might be slightly longer as it depends on when the netin process runs) and check $arp again and the entry should be gone.
+e) To re-verify, ping the VM again ($ping 192.168.1.100) and the entry should re-appear.
+---------------------------------------------------------------------
+
 3. 17.4 can be executed by running netfutures in XINU and udp_client.c in udp_vm_client folder.
 
 Task Distribution:-

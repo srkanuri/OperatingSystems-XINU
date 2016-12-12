@@ -8,7 +8,7 @@
 ***************************************************************
 
 In this assignment we implemented network functionality in Xinu. We implemented a UDP client in
-Linux VM and initiated a comminication between XINU and Linux using UDP. We checked for the stale
+Linux VM and initiated a communication between XINU and Linux using UDP. We checked for the stale
 ARP entries and freed them if they are present for more than 5 minutes. We also made a network 
 version of futures where the server acts as the consumer and the client acts as a producer. Once
 the server starts listening, the client can request messge from server. This invokes the futures
@@ -16,6 +16,7 @@ producer and generates a value for consumer so that it can be sent back to clien
 the request message, the futures value and the time taken by consumer in waiting.
 
 We have implemented and tested the code for the following scenarios:
+---------------------------------------------------------------------
 1. 17.2 can be executed by running udpeserver in XINU and udp_client.c in udp_vm_client folder.
 
 The udp_client sends out UDP datagram to the target machine (Xinu BBB) with a string that you provide to it through comand line.
@@ -53,7 +54,29 @@ d) Wait for 5 mins (might be slightly longer as it depends on when the netin pro
 e) To re-verify, ping the VM again ($ping 192.168.1.100) and the entry should re-appear.
 ---------------------------------------------------------------------
 
-3. 17.4 can be executed by running netfutures in XINU and udp_client.c in udp_vm_client folder.
+3. 17.4 can be executed by running netfutures command in XINU and udp_client.c in udp_vm_client folder.
+
+**Steps to run:-
+a) Boot up BBB and start UDP echo server with the command "$ netfutures <PORT>".
+b) The port is an optional parameter and is taken as 7 by default. 
+c) Take note of the XINU IP Address as well. (can be checked with "$ipaddr") //BBB IP is 192.168.1.101 by default
+d) On the VM, do "$ cd udp_vm_client" and execute "$ gcc -o udp_client udp_client.c"
+e) "$ ./udp_client <BBB IP> <UDP Echo Port> <String to pass>"  // UDP Echo server on Xinu is configured to run on port 7 by default.
+You should see an output as follows:-
+You should see an output as follows:-
+$ ./udp_client 192.168.1.101 7 Testing
+
+Request Data: Testing
+
+Number of bytes received: 66
+Response:-
+Input Request     : Testing
+Futures Output    : -201558842
+Wait Time         : 21
+
+Request sent at: 1481489559 seconds and 979043 microseconds
+
+Last response received at: 1481489559 seconds and 985739 
 
 Task Distribution:-
 Srikanth  -> Implemented 17.4
